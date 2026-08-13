@@ -1,0 +1,10 @@
+name = "ImmutableRandom"
+uuid = "df841313-b7d9-5705-98c2-b4248e6a5d71"
+authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>"]
+version = "0.1.0"
+
+[workspace]
+projects = ["test", "docs"]
+
+[compat]
+julia = "1.10"
