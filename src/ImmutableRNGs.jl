@@ -1,4 +1,4 @@
-module ImmutableRandom
+module ImmutableRNGs
 
 """
     hi = hello_world()

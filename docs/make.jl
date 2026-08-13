@@ -1,7 +1,7 @@
-using ImmutableRandom
+using ImmutableRNGs
 using Documenter
 
-DocMeta.setdocmeta!(ImmutableRandom, :DocTestSetup, :(using ImmutableRandom); recursive = true)
+DocMeta.setdocmeta!(ImmutableRNGs, :DocTestSetup, :(using ImmutableRNGs); recursive = true)
 
 # Add titles of sections and overrides page titles
 const titles = Dict(
@@ -59,12 +59,12 @@ function list_pages()
 end
 
 makedocs(;
-    modules = [ImmutableRandom],
+    modules = [ImmutableRNGs],
     authors = "Uwe Hernandez Acosta <u.hernandez@hzdr.de>",
-    repo = "https://github.com/szabo137/ImmutableRandom.jl/blob/{commit}{path}#{line}",
-    sitename = "ImmutableRandom.jl",
-    format = Documenter.HTML(; canonical = "https://szabo137.github.io/ImmutableRandom.jl"),
+    repo = "https://github.com/szabo137/ImmutableRNGs.jl/blob/{commit}{path}#{line}",
+    sitename = "ImmutableRNGs.jl",
+    format = Documenter.HTML(; canonical = "https://szabo137.github.io/ImmutableRNGs.jl"),
     pages = list_pages(),
 )
 
-deploydocs(; repo = "github.com/szabo137/ImmutableRandom.jl")
+deploydocs(; repo = "github.com/szabo137/ImmutableRNGs.jl")

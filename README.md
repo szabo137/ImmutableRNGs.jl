@@ -1,8 +1,8 @@
-# ImmutableRandom
+# ImmutableRNGs
 
-[![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://szabo137.github.io/ImmutableRandom.jl/stable)
-[![Development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://szabo137.github.io/ImmutableRandom.jl/dev)
-[![Test workflow status](https://github.com/szabo137/ImmutableRandom.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/szabo137/ImmutableRandom.jl/actions/workflows/Test.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/szabo137/ImmutableRandom.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/szabo137/ImmutableRandom.jl)
-[![Docs workflow Status](https://github.com/szabo137/ImmutableRandom.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/szabo137/ImmutableRandom.jl/actions/workflows/Docs.yml?query=branch%3Amain)
+[![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://szabo137.github.io/ImmutableRNGs.jl/stable)
+[![Development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://szabo137.github.io/ImmutableRNGs.jl/dev)
+[![Test workflow status](https://github.com/szabo137/ImmutableRNGs.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/szabo137/ImmutableRNGs.jl/actions/workflows/Test.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/szabo137/ImmutableRNGs.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/szabo137/ImmutableRNGs.jl)
+[![Docs workflow Status](https://github.com/szabo137/ImmutableRNGs.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/szabo137/ImmutableRNGs.jl/actions/workflows/Docs.yml?query=branch%3Amain)
 [![BestieTemplate](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JuliaBesties/BestieTemplate.jl/main/docs/src/assets/badge.json)](https://github.com/JuliaBesties/BestieTemplate.jl)

@@ -1,7 +1,7 @@
 [deps]
-ImmutableRandom = "df841313-b7d9-5705-98c2-b4248e6a5d71"
+ImmutableRNGs = "df841313-b7d9-5705-98c2-b4248e6a5d71"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [sources]
-ImmutableRandom = {path = ".."}
+ImmutableRNGs = { path = ".." }

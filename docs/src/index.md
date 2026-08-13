@@ -1,7 +1,7 @@
 ```@meta
-CurrentModule = ImmutableRandom
+CurrentModule = ImmutableRNGs
 ```
 
-# ImmutableRandom
+# ImmutableRNGs
 
-Documentation for [ImmutableRandom](https://github.com/szabo137/ImmutableRandom.jl).
+Documentation for [ImmutableRNGs](https://github.com/szabo137/ImmutableRNGs.jl).

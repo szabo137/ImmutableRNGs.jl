@@ -1,6 +1,6 @@
-using ImmutableRandom
+using ImmutableRNGs
 using Test
 
-@testset "ImmutableRandom.jl" begin
-    @test ImmutableRandom.hello_world() == "Hello, World!"
+@testset "ImmutableRNGs.jl" begin
+    @test ImmutableRNGs.hello_world() == "Hello, World!"
 end
