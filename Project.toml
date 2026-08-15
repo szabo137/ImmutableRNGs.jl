@@ -1,10 +1,16 @@
 name = "ImmutableRNGs"
 uuid = "df841313-b7d9-5705-98c2-b4248e6a5d71"
-authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>"]
 version = "0.1.0"
+authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>"]
 
 [workspace]
 projects = ["test", "docs"]
 
+[deps]
+PhiloxRNG = "508b8dab-2d72-462c-b792-eb7ae329b456"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
 [compat]
+PhiloxRNG = "1.1.2"
+Random = "1.11.0"
 julia = "1.10"
