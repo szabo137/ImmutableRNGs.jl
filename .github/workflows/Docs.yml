@@ -42,9 +42,9 @@ jobs:
         run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using ImmutableRandom
-            DocMeta.setdocmeta!(ImmutableRandom, :DocTestSetup, :(using ImmutableRandom); recursive=true)
-            doctest(ImmutableRandom)'
+            using ImmutableRNGs
+            DocMeta.setdocmeta!(ImmutableRNGs, :DocTestSetup, :(using ImmutableRNGs); recursive=true)
+            doctest(ImmutableRNGs)'
       - name: Generate and deploy documentation
         run: julia --project=docs docs/make.jl
         env:
