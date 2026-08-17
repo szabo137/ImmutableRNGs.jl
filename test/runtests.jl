@@ -1,58 +1,64 @@
 using ImmutableRNGs
 using Test
 
-DTYPES = [Float64, UInt64, Int]
+RNGs = [
+    (Splitmix64(123), [Float64, UInt64, Int]),
+    (Philox4x32(123, 1), [Float32, Float64, UInt32]),
+]
 
-@testset "immutable primitives" begin
+@testset "RNG = $(typeof(RNG[1]))" for RNG in RNGs
+    base_rng = RNG[1]
+    DTYPES = RNG[2]
 
-    RNG = Splitmix64(123)
-    state = CounterState(0)
+    @testset "immutable primitives" begin
 
-    @testset "default" begin
-        sample, new_state = rand_step(RNG, state)
-        @test sample isa Float64
-        @test new_state != state
+        state = CounterState(0)
 
-        RNG2 = deepcopy(RNG)
-        sample2, new_state2 = rand_step(RNG2, state)
-        @test sample2 == sample
-        @test new_state2 == new_state
+        @testset "default" begin
+            sample, new_state = rand_step(base_rng, state)
+            @test sample isa Float64
+            @test new_state != state
+
+            RNG2 = deepcopy(base_rng)
+            sample2, new_state2 = rand_step(RNG2, state)
+            @test sample2 == sample
+            @test new_state2 == new_state
+        end
+
+        @testset "type = $T" for T in DTYPES
+            sample, new_state = rand_step(base_rng, state, T)
+            @test sample isa T
+            @test new_state != state
+
+            RNG2 = deepcopy(base_rng)
+            sample2, new_state2 = rand_step(RNG2, state, T)
+            @test sample2 == sample
+            @test new_state2 == new_state
+        end
     end
 
-    @testset "type = $T" for T in DTYPES
-        sample, new_state = rand_step(RNG, state, T)
-        @test sample isa T
-        @test new_state != state
+    @testset "Legacy compatibility" begin
 
-        RNG2 = deepcopy(RNG)
-        sample2, new_state2 = rand_step(RNG2, state, T)
-        @test sample2 == sample
-        @test new_state2 == new_state
-    end
-end
+        @testset "default" begin
+            ref_state = CounterState(0)
+            wrapper_rng = stateful(base_rng, ref_state)
+            sample = rand(wrapper_rng)
 
-@testset "Legacy compatibility" begin
-    base_rng = Splitmix64(137)
+            ref_sample, new_state = rand_step(base_rng, ref_state)
 
-    @testset "default" begin
-        ref_state = CounterState(0)
-        wrapper_rng = stateful(base_rng, ref_state)
-        sample = rand(wrapper_rng)
+            @test sample isa Float64
+            @test sample == ref_sample
+        end
 
-        ref_sample, new_state = rand_step(base_rng, ref_state)
+        @testset "type = $T" for T in DTYPES
+            ref_state = CounterState(0)
+            wrapper_rng = stateful(base_rng, ref_state)
+            sample = rand(wrapper_rng, T)
 
-        @test sample isa Float64
-        @test sample == ref_sample
-    end
+            ref_sample, new_state = rand_step(base_rng, ref_state, T)
 
-    @testset "type = $T" for T in DTYPES
-        ref_state = CounterState(0)
-        wrapper_rng = stateful(base_rng, ref_state)
-        sample = rand(wrapper_rng, T)
-
-        ref_sample, new_state = rand_step(base_rng, ref_state, T)
-
-        @test sample isa T
-        @test sample == ref_sample
+            @test sample isa T
+            @test sample == ref_sample
+        end
     end
 end
