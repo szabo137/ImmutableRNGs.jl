@@ -1,11 +1,15 @@
 # Reference Implementation: Splitmix64 (simple counter-based RNG)
 
 """
-Reference counter-based RNG.
+    Splitmix64(seed)
 
-This backend demonstrates the intended API shape for counter-based generators:
-the state is just a monotonically increasing counter, and each call maps the
-current counter to output bits without mutating any hidden object state.
+A SplitMix64 counter-based RNG.
+
+See Steele, Lea, and Flood, [*Fast Splittable Pseudorandom Number
+Generators*](https://doi.org/10.1145/2660193.2660195).
+
+Use directly with [`rand_step`](@ref). Supported sample types are `UInt64`,
+`Float64`, and `Int`.
 """
 struct Splitmix64 <: AbstractImmutableRNG
     seed::UInt64
@@ -45,6 +49,7 @@ end
     return rand_step(rng, state, Float64)
 end
 
+# TODO: lift this to general AbstractImmutableRNG objects
 function rand_step!(rng::Splitmix64, dest::AbstractArray{T}, state::CounterState) where {T}
     s = state
     @inbounds for i in eachindex(dest)

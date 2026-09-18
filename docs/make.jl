@@ -1,70 +1,52 @@
 using ImmutableRNGs
 using Documenter
 
+project_path = Base.Filesystem.joinpath(Base.Filesystem.dirname(Base.source_path()), "..")
+
 DocMeta.setdocmeta!(ImmutableRNGs, :DocTestSetup, :(using ImmutableRNGs); recursive = true)
 
-# Add titles of sections and overrides page titles
-const titles = Dict(
-    # "10-tutorials" => "Tutorials", # example folder title
-    "91-developer.md" => "Developer docs",
-)
+# some paths for links
+readme_path = joinpath(project_path, "README.md")
+index_path = joinpath(project_path, "docs/src/index.md")
+license_path = "https://github.com/szabo137/ImmutableRNGs.jl/blob/main/LICENSE"
 
-function recursively_list_pages(folder; path_prefix = "")
-    pages_list = Any[]
-    for file in readdir(folder)
-        if file == "index.md"
-            # We add index.md separately to make sure it is the first in the list
-            continue
-        end
-        # this is the relative path according to our prefix, not @__DIR__, i.e., relative to `src`
-        relpath = joinpath(path_prefix, file)
-        # full path of the file
-        fullpath = joinpath(folder, relpath)
+# Copy README.md from the project base folder and use it as the start page
+open(readme_path, "r") do readme_in
+    readme_string = read(readme_in, String)
 
-        if isdir(fullpath)
-            # If this is a folder, enter the recursion case
-            subsection = recursively_list_pages(fullpath; path_prefix = relpath)
+    # replace relative links in the README.md
+    readme_string = replace(readme_string, "[MIT](LICENSE)" => "[MIT]($(license_path))")
 
-            # Ignore empty folders
-            if length(subsection) > 0
-                title = if haskey(titles, relpath)
-                    titles[relpath]
-                else
-                    @error "Bad usage: '$relpath' does not have a title set. Fix in 'docs/make.jl'"
-                    relpath
-                end
-                push!(pages_list, title => subsection)
-            end
-
-            continue
-        end
-
-        if splitext(file)[2] != ".md" # non .md files are ignored
-            continue
-        elseif haskey(titles, relpath) # case 'title => path'
-            push!(pages_list, titles[relpath] => relpath)
-        else # case 'title'
-            push!(pages_list, relpath)
-        end
+    open(index_path, "w") do readme_out
+        write(readme_out, readme_string)
     end
-
-    return pages_list
 end
 
-function list_pages()
-    root_dir = joinpath(@__DIR__, "src")
-    pages_list = recursively_list_pages(root_dir)
+#const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
+const numbered_pages = [
+    file for file in readdir(joinpath(@__DIR__, "src")) if
+        file != "index.md" && splitext(file)[2] == ".md"
+]
 
-    return ["index.md"; pages_list]
+
+try
+    makedocs(;
+        modules = [ImmutableRNGs],
+        authors = "Uwe Hernandez Acosta <u.hernandez@hzdr.de>",
+        #repo = "https://github.com/szabo137/ImmutableRNGs.jl/blob/{commit}{path}#{line}",
+        repo = Documenter.Remotes.GitHub("szabo137", "ImmutableRNGs.jl"),
+        sitename = "ImmutableRNGs.jl",
+        format = Documenter.HTML(;
+            prettyurls = get(ENV, "CI", "false") == "true",
+            canonical = "https://szabo137.github.io/ImmutableRNGs.jl",
+            assets = String[],
+        ),
+        pages = ["index.md"; numbered_pages]
+    )
+finally
+    # doing some garbage collection
+    @info "GarbageCollection: remove generated landing page"
+    rm(index_path)
 end
-
-makedocs(;
-    modules = [ImmutableRNGs],
-    authors = "Uwe Hernandez Acosta <u.hernandez@hzdr.de>",
-    repo = "https://github.com/szabo137/ImmutableRNGs.jl/blob/{commit}{path}#{line}",
-    sitename = "ImmutableRNGs.jl",
-    format = Documenter.HTML(; canonical = "https://szabo137.github.io/ImmutableRNGs.jl"),
-    pages = list_pages(),
-)
 
 deploydocs(; repo = "github.com/szabo137/ImmutableRNGs.jl")
