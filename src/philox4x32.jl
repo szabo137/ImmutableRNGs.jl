@@ -1,5 +1,13 @@
 PhilioxReturnTypes = Union{UInt32, Float32, Float64}
 
+"""
+    Philox4x32(key, counter)
+
+A Philox 4x32 RNG with 10 rounds, backed by `PhiloxRNG.jl`.
+
+Use directly with [`rand_step`](@ref). Supported sample types are `UInt32`,
+`Float32`, and `Float64`.
+"""
 struct Philox4x32 <: AbstractImmutableRNG
     key::UInt64
     counter::UInt64
