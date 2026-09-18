@@ -11,31 +11,43 @@ export Philox4x32
 ## interface
 
 """
-Marker supertype for immutable RNG backends.
+    AbstractImmutableRNG
 
-The key design goal is that sampling does not mutate the RNG object itself.
-Instead, every call consumes an explicit `state` value and returns the next
-state together with the sample.
+Abstract supertype for immutable random-number generator backends.
+
+Use [`rand_step`](@ref) with an explicit RNG state to generate samples.
 """
 abstract type AbstractImmutableRNG end
 
-"""
-Marker supertype for explicit RNG state objects.
 
-For counter-based RNGs, the state may simply be an integer counter. For other
-generators, it can be a struct containing the full internal state.
+"""
+    AbstractImmutableRNGState
+
+Abstract supertype for explicit immutable RNG states.
 """
 abstract type AbstractImmutableRNGState end
 
+"""
+    next_state(state)
+
+Return the state following `state`.
+"""
 function next_state end
 
 """
-    rand_step(::AbstractImmutableRNG, state)
+    rand_step(rng, state)
+    rand_step(rng, state, T)
 
-Interface function: return a tuple (sample, state), where `state` is the new state of the RNG.
+Generate a sample from `rng` using `state`, returning `(sample, next_state)`.
 """
 function rand_step end
 
+"""
+    rand_step!(rng, dest, state)
+
+Fill `dest` with samples from `rng`, starting at `state`, and return the
+resulting state.
+"""
 function rand_step! end
 
 
