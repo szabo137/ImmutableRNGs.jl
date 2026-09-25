@@ -1,6 +1,6 @@
 name = "ImmutableRNGs"
 uuid = "df841313-b7d9-5705-98c2-b4248e6a5d71"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>"]
 
 [workspace]
