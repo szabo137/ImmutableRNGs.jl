@@ -90,7 +90,7 @@ explicit `state` value.
 - `Splitmix64`: a SplitMix64 counter-based RNG supporting `UInt64`, `Float64`,
   and `Int`.
 - `Philox4x32`: a Philox 4x32-10 counter-based RNG, backed by
-  [`PhiloxRNG.jl`](https://github.com/JuliaRandom/PhiloxRNG.jl), supporting
+  [`PhiloxRNG.jl`](https://github.com/medyan-dev/PhiloxRNG.jl), supporting
   `UInt32`, `Float32`, and `Float64`.
 
 ## Compatibility with `Random`
@@ -101,8 +101,10 @@ allowing use through Julia's conventional `Random.rand` interface:
 ```julia
 stateful_rng = StatefulRNG(rng, CounterState(0))
 
-rand(stateful_rng)
-rand(stateful_rng, Float64)
+rand(stateful_rng)                  # `Float64`
+rand(stateful_rng, UInt64)
+
+values = Vector{Float32}(undef, 1_000)
 rand!(stateful_rng, values)
 ```
 
