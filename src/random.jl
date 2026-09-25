@@ -52,3 +52,52 @@ function Random.rand!(rng::StatefulRNG, A::AbstractArray)
     rng.state = rand_step!(rng.rng, rng.state, A)
     return A
 end
+
+@inline function Random.randn(rng::StatefulRNG)
+    sample, new_state = randn_step(rng.rng, rng.state)
+    rng.state = new_state
+    return sample
+end
+
+@inline function Random.randn(
+        rng::StatefulRNG,
+        T::Union{Type{Float32}, Type{Float64}},
+    )
+    sample, new_state = randn_step(rng.rng, rng.state, T)
+    rng.state = new_state
+    return sample
+end
+
+# default: Float64
+function Random.randn(rng::StatefulRNG, dims::Dims)
+    A = Array{Float64}(undef, dims)
+    return Random.randn!(rng, A)
+end
+
+function Random.randn(
+        rng::StatefulRNG,
+        ::Type{T},
+        dims::Dims,
+    ) where {T <: Union{Float32, Float64}}
+    A = Array{T}(undef, dims)
+    return Random.randn!(rng, A)
+end
+
+Random.randn(rng::StatefulRNG, dims::Integer...) =
+    Random.randn(rng, Tuple(dims))
+
+Random.randn(
+    rng::StatefulRNG,
+    ::Type{T},
+    dims::Integer...,
+) where {T <: Union{Float32, Float64}} =
+    Random.randn(rng, T, Tuple(dims))
+
+function Random.randn!(
+        rng::StatefulRNG,
+        A::AbstractArray{T},
+    ) where {T <: Union{Float32, Float64}}
+    new_state = randn_step!(rng.rng, rng.state, A)
+    rng.state = new_state
+    return A
+end
