@@ -39,14 +39,25 @@ state = CounterState(0)
 
 x, state = rand_step(rng, state)          # `Float64` by default
 y, state = rand_step(rng, state, UInt64)
+z, state = rand_step(rng, state, Float32)
 ```
 
-To fill an array, use `rand_step!`. It returns the state after the final
-sample:
+To fill an array, use `rand_step!`. It mutates the destination array and
+returns the state after the final sample:
 
 ```julia
-values = Vector{Float64}(undef, 1_000)
-state = rand_step!(rng, values, state)
+values = Vector{Float32}(undef, 1_000)
+state = rand_step!(rng, state, values)
+```
+
+The generated type is determined by the destination array:
+
+```julia
+dest = Vector{UInt64}(undef, 1_000)
+state = rand_step!(rng, state, dest)
+
+dest = Matrix{Int}(undef, 10, 10)
+state = rand_step!(rng, state, dest)
 ```
 
 ## Interface
@@ -114,6 +125,12 @@ We extend our gratitude for the support received through direct and indirect fun
 
 - **Michael Bussmann**
 - **Tobias Dornheim**
+
+## AI assistance
+
+Parts of the documentation and code were improved with assistance from
+ChatGPT-5.6 Terra. All generated suggestions were reviewed and adapted by the
+project authors.
 
 ## License
 
