@@ -43,12 +43,21 @@ Generate a sample from `rng` using `state`, returning `(sample, next_state)`.
 function rand_step end
 
 """
-    rand_step!(rng, dest, state)
+    rand_step!(rng, state, dest)
 
 Fill `dest` with samples from `rng`, starting at `state`, and return the
 resulting state.
 """
 function rand_step! end
+
+# generic implementation
+function rand_step!(rng::AbstractImmutableRNG, state::AbstractImmutableRNGState, dest::AbstractArray{T}) where {T}
+    s = state
+    @inbounds for i in eachindex(dest)
+        dest[i], s = rand_step(rng, s, T)
+    end
+    return s
+end
 
 
 include("random.jl")
