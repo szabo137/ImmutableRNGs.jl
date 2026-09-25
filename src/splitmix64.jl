@@ -31,10 +31,23 @@ end
     return value, next_state(state)
 end
 
+# UInt32
+@inline function rand_step(rng::Splitmix64, state::CounterState, ::Type{UInt32})
+    value = counter_value(rng, state)
+    return UInt32(value >> 32), next_state(state)
+end
+
 # Float64
 @inline function rand_step(rng::Splitmix64, state::CounterState, ::Type{Float64})
     value, new_state = rand_step(rng, state, UInt64)
     sample = reinterpret(Float64, (value >> 12) | 0x3ff0000000000000) - 1.0
+    return sample, new_state
+end
+
+# Float32
+@inline function rand_step(rng::Splitmix64, state::CounterState, ::Type{Float32})
+    value, new_state = rand_step(rng, state, UInt64)
+    sample = reinterpret(Float32, UInt32(value >> 41) | 0x3f800000) - 1.0f0
     return sample, new_state
 end
 
@@ -47,13 +60,4 @@ end
 # default is Float64
 @inline function rand_step(rng::Splitmix64, state::CounterState)
     return rand_step(rng, state, Float64)
-end
-
-# TODO: lift this to general AbstractImmutableRNG objects
-function rand_step!(rng::Splitmix64, dest::AbstractArray{T}, state::CounterState) where {T}
-    s = state
-    @inbounds for i in eachindex(dest)
-        dest[i], s = rand_step(rng, s, T)
-    end
-    return s
 end

@@ -1,14 +1,16 @@
 using ImmutableRNGs
 using Test
+using Random
+PARAM_RNG = Xoshiro(137)
 
 RNGs = [
-    (Splitmix64(123), [Float64, UInt64, Int]),
-    (Philox4x32(123, 1), [Float32, Float64, UInt32]),
+    (Splitmix64(123), [Float32, Float64, UInt64, UInt32, Int]),
+    (Philox4x32(123, 1), [Float32, Float64, UInt64, UInt32, Int]),
 ]
 
-@testset "RNG = $(typeof(RNG[1]))" for RNG in RNGs
-    base_rng = RNG[1]
-    DTYPES = RNG[2]
+N = rand(PARAM_RNG, 2:10)
+
+@testset "RNG = $(typeof(base_rng))" for (base_rng, DTYPES) in RNGs
 
     @testset "immutable primitives" begin
 
@@ -59,6 +61,35 @@ RNGs = [
 
             @test sample isa T
             @test sample == ref_sample
+        end
+    end
+
+    @testset "bulk immutable generation" begin
+        initial_state = CounterState(0)
+
+        @testset "type = $T" for T in DTYPES
+            dest = Vector{T}(undef, N)
+
+            final_state = rand_step!(base_rng, initial_state, dest)
+
+            # Scalar generation is the reference sequence.
+            expected = Vector{T}(undef, length(dest))
+            expected_state = initial_state
+            for i in eachindex(expected)
+                expected[i], expected_state = rand_step(base_rng, expected_state, T)
+            end
+
+            @test dest == expected
+            @test final_state == expected_state
+            @test initial_state == CounterState(0)  # input state remains immutable
+        end
+
+        @testset "empty destination" begin
+            dest = Float64[]
+            final_state = rand_step!(base_rng, initial_state, dest)
+
+            @test isempty(dest)
+            @test final_state == initial_state
         end
     end
 end
