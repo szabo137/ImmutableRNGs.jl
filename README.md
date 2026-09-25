@@ -111,6 +111,28 @@ rand!(stateful_rng, values)
 The wrapper is mutable for compatibility, while the underlying backend retains
 the explicit-state `rand_step` interface.
 
+## Why another random-number package?
+
+ImmutableRNGs provides a small, uniform explicit-state interface for immutable
+random-number generators. The same `rand_step` and `rand_step!` API can be used
+on the CPU and in GPU kernels, where passing RNG state explicitly is often more
+convenient than mutating an RNG object.
+
+Related packages include:
+
+[`Random123.jl`](https://github.com/JuliaRandom/Random123.jl) provides Julia
+implementations of the broader Random123 family of counter-based generators
+through Julia's conventional mutable `Random.AbstractRNG` interface.
+
+[`PhiloxRNG.jl`](https://github.com/medyan-dev/PhiloxRNG.jl) provides efficient
+pure-function implementations of the Philox4x32-10 generator for CPU and GPU
+use.
+
+ImmutableRNGs complements these packages rather than replacing them. Its
+`Philox4x32` backend is backed by `PhiloxRNG.jl`, while ImmutableRNGs adds a
+backend-independent immutable interface and an optional `StatefulRNG` wrapper
+for compatibility with Julia's `Random` API.
+
 ## Contributing
 
 Contributions are welcome, especially additional RNG backends. Please open an
