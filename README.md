@@ -90,7 +90,7 @@ explicit `state` value.
 - `Splitmix64`: a SplitMix64 counter-based RNG supporting `UInt64`, `Float64`,
   and `Int`.
 - `Philox4x32`: a Philox 4x32-10 counter-based RNG, backed by
-  [`PhiloxRNG.jl`](https://github.com/JuliaRandom/PhiloxRNG.jl), supporting
+  [`PhiloxRNG.jl`](https://github.com/medyan-dev/PhiloxRNG.jl), supporting
   `UInt32`, `Float32`, and `Float64`.
 
 ## Compatibility with `Random`
@@ -101,13 +101,37 @@ allowing use through Julia's conventional `Random.rand` interface:
 ```julia
 stateful_rng = StatefulRNG(rng, CounterState(0))
 
-rand(stateful_rng)
-rand(stateful_rng, Float64)
+rand(stateful_rng)                  # `Float64`
+rand(stateful_rng, UInt64)
+
+values = Vector{Float32}(undef, 1_000)
 rand!(stateful_rng, values)
 ```
 
 The wrapper is mutable for compatibility, while the underlying backend retains
 the explicit-state `rand_step` interface.
+
+## Why another random-number package?
+
+ImmutableRNGs provides a small, uniform explicit-state interface for immutable
+random-number generators. The same `rand_step` and `rand_step!` API can be used
+on the CPU and in GPU kernels, where passing RNG state explicitly is often more
+convenient than mutating an RNG object.
+
+Related packages include:
+
+[`Random123.jl`](https://github.com/JuliaRandom/Random123.jl) provides Julia
+implementations of the broader Random123 family of counter-based generators
+through Julia's conventional mutable `Random.AbstractRNG` interface.
+
+[`PhiloxRNG.jl`](https://github.com/medyan-dev/PhiloxRNG.jl) provides efficient
+pure-function implementations of the Philox4x32-10 generator for CPU and GPU
+use.
+
+ImmutableRNGs complements these packages rather than replacing them. Its
+`Philox4x32` backend is backed by `PhiloxRNG.jl`, while ImmutableRNGs adds a
+backend-independent immutable interface and an optional `StatefulRNG` wrapper
+for compatibility with Julia's `Random` API.
 
 ## Contributing
 
