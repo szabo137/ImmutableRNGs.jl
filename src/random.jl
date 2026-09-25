@@ -37,25 +37,18 @@ end
 
 function Random.rand(rng::StatefulRNG, dims::Dims)
     A = Array{Float64}(undef, dims)
-    rng.state = rand_step!(A, rng.rng, rng.state, Float64)
-    return A
+    return Random.rand!(rng, A)
 end
 
 function Random.rand(rng::StatefulRNG, ::Type{T}, dims::Dims) where {T}
     A = Array{T}(undef, dims)
-    rng.state = rand_step!(A, rng.rng, rng.state, T)
-    return A
+    return Random.rand!(rng, A)
 end
 
 Random.rand(rng::StatefulRNG, dims::Integer...) = Random.rand(rng, Tuple(dims))
 Random.rand(rng::StatefulRNG, ::Type{T}, dims::Integer...) where {T} = Random.rand(rng, T, Tuple(dims))
 
 function Random.rand!(rng::StatefulRNG, A::AbstractArray)
-    rng.state = rand_step!(A, rng.rng, rng.state, eltype(A))
-    return A
-end
-
-function Random.rand!(rng::StatefulRNG, A::AbstractArray, ::Type{T}) where {T}
-    rng.state = rand_step!(A, rng.rng, rng.state, T)
+    rng.state = rand_step!(rng.rng, rng.state, A)
     return A
 end

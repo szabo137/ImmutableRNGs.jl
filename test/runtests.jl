@@ -39,30 +39,6 @@ N = rand(PARAM_RNG, 2:10)
         end
     end
 
-    @testset "Legacy compatibility" begin
-
-        @testset "default" begin
-            ref_state = CounterState(0)
-            wrapper_rng = stateful(base_rng, ref_state)
-            sample = rand(wrapper_rng)
-
-            ref_sample, new_state = rand_step(base_rng, ref_state)
-
-            @test sample isa Float64
-            @test sample == ref_sample
-        end
-
-        @testset "type = $T" for T in DTYPES
-            ref_state = CounterState(0)
-            wrapper_rng = stateful(base_rng, ref_state)
-            sample = rand(wrapper_rng, T)
-
-            ref_sample, new_state = rand_step(base_rng, ref_state, T)
-
-            @test sample isa T
-            @test sample == ref_sample
-        end
-    end
 
     @testset "bulk immutable generation" begin
         initial_state = CounterState(0)
@@ -72,7 +48,6 @@ N = rand(PARAM_RNG, 2:10)
 
             final_state = rand_step!(base_rng, initial_state, dest)
 
-            # Scalar generation is the reference sequence.
             expected = Vector{T}(undef, length(dest))
             expected_state = initial_state
             for i in eachindex(expected)
@@ -81,7 +56,7 @@ N = rand(PARAM_RNG, 2:10)
 
             @test dest == expected
             @test final_state == expected_state
-            @test initial_state == CounterState(0)  # input state remains immutable
+            @test initial_state == CounterState(0)
         end
 
         @testset "empty destination" begin
@@ -90,6 +65,69 @@ N = rand(PARAM_RNG, 2:10)
 
             @test isempty(dest)
             @test final_state == initial_state
+        end
+    end
+
+    @testset "Legacy compatibility" begin
+
+        @testset "rand" begin
+
+            @testset "default" begin
+                ref_state = CounterState(0)
+                wrapper_rng = stateful(base_rng, ref_state)
+                sample = rand(wrapper_rng)
+
+                ref_sample, new_state = rand_step(base_rng, ref_state)
+
+                @test sample isa Float64
+                @test sample == ref_sample
+            end
+
+            @testset "type = $T" for T in DTYPES
+                ref_state = CounterState(0)
+                wrapper_rng = stateful(base_rng, ref_state)
+                sample = rand(wrapper_rng, T)
+
+                ref_sample, new_state = rand_step(base_rng, ref_state, T)
+
+                @test sample isa T
+                @test sample == ref_sample
+            end
+        end
+        @testset "rand!" begin
+            initial_state = CounterState(0)
+
+            @testset "type = $T" for T in DTYPES
+                wrapper_rng = stateful(base_rng, initial_state)
+                dest = Vector{T}(undef, N)
+
+                rand!(wrapper_rng, dest)
+
+                expected = Vector{T}(undef, length(dest))
+                expected_state = initial_state
+                for i in eachindex(expected)
+                    expected[i], expected_state = rand_step(base_rng, expected_state, T)
+                end
+
+                @test dest == expected
+
+                next_sample = rand(wrapper_rng, T)
+                expected_next, _ = rand_step(base_rng, expected_state, T)
+                @test next_sample == expected_next
+            end
+
+            @testset "empty destination" begin
+                wrapper_rng = stateful(base_rng, initial_state)
+                dest = Float64[]
+
+                rand!(wrapper_rng, dest)
+
+                @test isempty(dest)
+
+                sample = rand(wrapper_rng)
+                expected, _ = rand_step(base_rng, initial_state)
+                @test sample == expected
+            end
         end
     end
 end
